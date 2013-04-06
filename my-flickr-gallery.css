@@ -1,0 +1,56 @@
+#mfg-gallery {
+	margin-bottom: 0;
+}
+
+	#mfg-gallery a.thumbnail {
+		padding: 0.75rem;
+		text-decoration: none;
+	}
+
+	#mfg-gallery a.thumbnail:hover {
+		text-decoration: none;
+	}
+
+		#mfg-gallery a.thumbnail > figure {
+			margin: 0;
+			padding: 0;
+		}
+
+			#mfg-gallery a.thumbnail > figure > div {
+				background-color: #000;
+				position: relative;
+				width: inherit;
+				height: inherit;
+			}
+
+				#mfg-gallery a.thumbnail > figure > div > img {
+					margin: auto;
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+				}
+
+			#mfg-gallery a.thumbnail > figure > figcaption {
+				background-color: rgba(0, 0, 0, 0.5);
+				color: #ccc;
+				margin-bottom: -16px;
+				padding: 0 5px;
+				position: relative;
+				top: -16px;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				line-height: 16px;
+				font-size: 85%;
+			}
+
+#mfg-pagination {
+	margin-bottom: 20px;
+}
+
+#mfg-loader {
+	background-color: rgba(255, 255, 255, 0.5);
+	z-index: 1000; 
+}
