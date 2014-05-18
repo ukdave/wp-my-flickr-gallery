@@ -3,12 +3,12 @@
 Plugin Name: My Flickr Gallery
 Plugin URI: http://www.uk-dave.com
 Description: A Flickr plugin for Wordpress.
-Version: 1.0.0
+Version: 1.0.1
 Author: David Bull
 Author URI: http://www.uk-dave.com
 License: GPL2
 
-Copyright 2013 David Bull (email : david@uk-dave.com)
+Copyright 2014 David Bull (email : david@uk-dave.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-require_once( dirname( __FILE__ ) . '/phpFlickr-3.1/phpFlickr.php' );
+require_once( dirname( __FILE__ ) . '/phpFlickr-3.1.1/phpFlickr.php' );
 
 /**
  * Init.
@@ -45,7 +45,7 @@ if ( is_admin() ) {
  */
 function mfg_enqueue_assets() {
 	// Load our main stylesheet
-	wp_enqueue_style( 'mfg', plugins_url( 'my-flickr-gallery.css', __FILE__ ), array(), '0.1' );
+	wp_enqueue_style( 'mfg', plugins_url( 'my-flickr-gallery.css', __FILE__ ), array(), '1.0.1' );
 
 	// Load Bootstrap style rules for thumbnails, but only if Bootstrap is not already used
 	$bs = 0;
@@ -54,13 +54,13 @@ function mfg_enqueue_assets() {
 	$bs |= wp_style_is( 'bootstrap', 'done' );
 	$bs |= wp_style_is( 'bootstrap', 'to_do' );
 	if ( $bs == 0 ) {
-		wp_enqueue_style( 'mfg-bootstrap', plugins_url( 'my-flickr-gallery-bootstrap.css', __FILE__ ), array(), '0.1' );
+		wp_enqueue_style( 'mfg-bootstrap', plugins_url( 'my-flickr-gallery-bootstrap.css', __FILE__ ), array(), '1.0.1' );
 	}
 
 	// Load our main javascript file
 	$options = get_option( 'mfg' );
 	if ( $options['gallery_ajax'] == 'yes' ) {
-		wp_enqueue_script( 'mfg', plugins_url( 'my-flickr-gallery.js', __FILE__ ), array( 'jquery' ), '0.1' );
+		wp_enqueue_script( 'mfg', plugins_url( 'my-flickr-gallery.js', __FILE__ ), array( 'jquery' ), '1.0.1' );
 		wp_localize_script( 'mfg', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 	}
 }
@@ -83,7 +83,7 @@ add_filter( 'query_vars', 'mfg_queryvars' );
 function mfg_shortcode( $atts ) {
 	// Get the page number from the query variable
 	global $wp_query;
-	$page = intval( $wp_query->query_vars['mfg_page'] );
+	$page = intval( get_query_var('mfg_page') );
 	if ( $page <= 0 ) {
 		$page = 1;
 	}
@@ -185,21 +185,21 @@ function mfg_build_gallery( $post_id = 0, $page = 1 ) {
 		foreach ( (array) $photos['photos']['photo'] as $photo ) {
 			if ( $colorbox ) {
 				$link_href = mfg_build_photo_url( $photo, '_z' );
-				$img_title = esc_attr( $photo[title] ) . ' by ' . esc_attr( $username ) . ' on &lt;a href=\'' . $photos_url . $photo[id] . '\'&gt;Flickr&lt;/a&gt;';
+				$img_title = esc_attr( $photo['title'] ) . ' by ' . esc_attr( $username ) . ' on &lt;a href=\'' . $photos_url . $photo['id'] . '\'&gt;Flickr&lt;/a&gt;';
 				$img_class = 'colorbox-' . $post_id;
 			} else {
-				$link_href = $photos_url . $photo[id];
-				$img_title = esc_attr( $photo[title] );
+				$link_href = $photos_url . $photo['id'];
+				$img_title = esc_attr( $photo['title'] );
 				$img_class = '';
 			}
 			$out .= '	<li>';
 			$out .= '		<a class="thumbnail" href="' . $link_href . '">';
 			$out .= '			<figure' . mfg_get_figure_style( $image_size ) . '>';
 			$out .= '				<div>';
-			$out .= '					<img src="' . mfg_build_photo_url( $photo, $image_size ) . '" class="' . $img_class . '" alt="' . esc_attr( $photo[title] ) . '" title="' . $img_title . '" />';
+			$out .= '					<img src="' . mfg_build_photo_url( $photo, $image_size ) . '" class="' . $img_class . '" alt="' . esc_attr( $photo['title'] ) . '" title="' . $img_title . '" />';
 			$out .= '				</div>';
 			if ( $captions ) {
-				$out .= '				<figcaption>' . esc_attr( $photo[title] ) . '</figcaption>';
+				$out .= '				<figcaption>' . esc_attr( $photo['title'] ) . '</figcaption>';
 			}
 			$out .= '			</figure>';
 			$out .= '		</a>';
@@ -208,8 +208,8 @@ function mfg_build_gallery( $post_id = 0, $page = 1 ) {
 		$out .= '</ul>';
 
 		// Add pagination
-		$pages = $photos[photos][pages]; // returns total number of pages  
-		$total = $photos[photos][total]; // returns how many photos there are in total
+		$pages = $photos['photos']['pages']; // returns total number of pages  
+		$total = $photos['photos']['total']; // returns how many photos there are in total
 		$out .= '<p id="mfg-pagination">';
 		if ( $page > 1 ) {
 			$out .= '	<a id="mfg-prev" href="?mfg_page=' . ( $page - 1 ) . '" class="btn">' . __( '&laquo; Prev', 'mfg' ) . '</a>'; 
